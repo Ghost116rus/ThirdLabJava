@@ -5,7 +5,11 @@ package SecondLab;
 // 2 - В строке отсутствует какой-то символ
 // 5 - Меньше, чем некоторое число
 
-class Process  implements IFuncs, IConst
+import ThirdLab.Watcher;
+
+import java.util.Observable;
+
+class Process extends Observable implements IFuncs, IConst
 {
     @Override
     public int sum(String[] args) {
@@ -28,7 +32,7 @@ class Process  implements IFuncs, IConst
             }
             return sum1 + sum2;
         } catch (NumberLessConst e) {
-            System.out.println (e);
+            notifyObs(e);
             return -3;
         }
     }
@@ -41,6 +45,7 @@ class Process  implements IFuncs, IConst
 
     @Override
     public void findSymbol(String[] args) throws MinusNotFound {
+        notifyObs("Обращаемся к массиву для проверки на наличие в нем специального символа");
         boolean isSucces = false;
         for (String number : args)
         {
@@ -57,16 +62,28 @@ class Process  implements IFuncs, IConst
 
     @Override
     public void checkSize(String[] args) throws ArrayIsTooSmall {
+        notifyObs("Обращаемся к массиву для проверки его размера");
         if(args.length < min_array_size)
             throw new ArrayIsTooSmall();
     }
+
+    private void notifyObs(Object obj) {
+        setChanged();
+        notifyObservers(obj);
+    }
 }
 
-public class MainProgram
+public class MainProgram extends Observable
 {
-   private final static Process process = new Process();
+   private final Process process;
 
-   public static int process_sum(String[] args)
+   public MainProgram(Watcher w)
+   {
+       process = new Process();
+       process.addObserver(w);
+       this.addObserver(w);
+   }
+   public int process_sum(String[] args)
    {
        int result;
 
@@ -74,16 +91,22 @@ public class MainProgram
            process.checkSize(args);
            process.findSymbol(args);
 
+           notifyObs("Обращаемся к массиву для подсчитывания суммы и проверки его членов");
            result = process.sum(args);
 
        } catch (ArrayIsTooSmall e) {
-           System.out.println (e);
+           notifyObs(e);
            result = -1;
        } catch (MinusNotFound e) {
-           System.out.println (e);
+           notifyObs(e);
            result = -2;
        }
 
        return result;
    }
+
+    private void notifyObs(Object obj) {
+        setChanged();
+        notifyObservers(obj);
+    }
 }

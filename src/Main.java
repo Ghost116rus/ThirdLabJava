@@ -1,22 +1,29 @@
-import java.util.*;
+import SecondLab.MainProgram;
+import ThirdLab.*;
 
 
-class beWatched extends Observable {//Класс наблюдаемого объекта
-    void notifyObs() {
-        setChanged();
-        notifyObservers(32);
-    }
-} class Watcher implements Observer {//Класс обозревателя
-    public void update(Observable obs, Object arg) {
-        System.out.println ("received " + arg);
-    }
-}
 
 public class Main {
     public static void main(String[] args) {
-        Watcher w = new Watcher();//Создать объект приемника
-        beWatched bW = new beWatched();//Создать объект источника
-        bW.addObserver(w);
-        bW.notifyObs();//Уведомить
+
+        WorkWithConsole console = new WorkWithConsole();
+        var path = console.getPathFromConsole();
+
+        WorkWithFile reader = new WorkWithFile(path);
+        Watcher watcherWhoWriteInFile = new Watcher(reader);
+
+        console.addObserver(watcherWhoWriteInFile);
+
+        Watcher watcherWhoWrtieInConsole = new Watcher(console);
+
+        MainProgram sum = new MainProgram(watcherWhoWrtieInConsole);
+
+        var arr = reader.getData().split(" ");
+        for (String x : arr)
+            console.outputInConsole(x);
+
+        console.outputInConsole(" " + arr.length);
+        if (arr.length > 1)
+            sum.process_sum(arr);
     }
 }

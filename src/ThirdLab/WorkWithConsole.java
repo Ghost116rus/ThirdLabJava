@@ -2,7 +2,7 @@ package ThirdLab;
 
 import java.util.*;
 
-public class WorkWithConsole extends Observable {
+public class WorkWithConsole extends Observable implements ILogger {
     private final Scanner sc;
     public WorkWithConsole()
     {
@@ -23,4 +23,8 @@ public class WorkWithConsole extends Observable {
         System.out.println(obj);
     }
 
+    @Override
+    public void logEvent(String data) {
+        outputInConsole(data);
+    }
 }
