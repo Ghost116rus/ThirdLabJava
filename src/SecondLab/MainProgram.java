@@ -76,6 +76,13 @@ class Process extends Observable implements IFuncs, IConst
 public class MainProgram extends Observable
 {
    private final Process process;
+   private int result;
+   public void SetResult(int data)
+   {
+       notifyObs("Изменяем указанную переменную");
+       result = data;
+   }
+   public int GetResult() {return  result; };
 
    public MainProgram(Watcher w)
    {
@@ -83,26 +90,22 @@ public class MainProgram extends Observable
        process.addObserver(w);
        this.addObserver(w);
    }
-   public int process_sum(String[] args)
+   public void process_sum(String[] args)
    {
-       int result;
-
        try {
            process.checkSize(args);
            process.findSymbol(args);
 
            notifyObs("Обращаемся к массиву для подсчитывания суммы и проверки его членов");
-           result = process.sum(args);
+           SetResult(process.sum(args));
 
        } catch (ArrayIsTooSmall e) {
            notifyObs(e);
-           result = -1;
+           SetResult(-1);
        } catch (MinusNotFound e) {
            notifyObs(e);
-           result = -2;
+           SetResult(-2);
        }
-
-       return result;
    }
 
     private void notifyObs(Object obj) {

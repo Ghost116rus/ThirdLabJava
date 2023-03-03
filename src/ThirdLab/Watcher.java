@@ -11,6 +11,6 @@ public class Watcher implements Observer {
 
     @Override
     public void update(Observable o, Object arg) {
-        logger.logEvent((String) arg);
+        logger.LogEvent(arg.toString());
     }
 }

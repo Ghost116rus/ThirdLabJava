@@ -4,13 +4,19 @@ import ThirdLab.*;
 
 
 public class Main {
+
+
     public static void main(String[] args) {
 
         WorkWithConsole console = new WorkWithConsole();
-        var path = console.getPathFromConsole();
+        var result = console.UserInterface();
 
-        WorkWithFile reader = new WorkWithFile(path);
-        Watcher watcherWhoWriteInFile = new Watcher(reader);
+        var path = result.get("logFilePath");
+        if (path.equals("")) {   path = WorkWithFile.defaultLogPath; }
+
+        WorkWithFile file_printer = new WorkWithFile(path);
+        Watcher watcherWhoWriteInFile = new Watcher(file_printer);
+        file_printer.LogEvent(result.get("dialogBeforeLogOpen"));
 
         console.addObserver(watcherWhoWriteInFile);
 
@@ -18,12 +24,10 @@ public class Main {
 
         MainProgram sum = new MainProgram(watcherWhoWrtieInConsole);
 
-        var arr = reader.getData().split(" ");
-        for (String x : arr)
-            console.outputInConsole(x);
+        var arr = result.get("array").split(" ");
+        sum.process_sum(arr);
+        console.OutputInConsole("Результат работы по поиску суммы: " + sum.GetResult());
 
-        console.outputInConsole(" " + arr.length);
-        if (arr.length > 1)
-            sum.process_sum(arr);
+        file_printer.EndWork();
     }
 }
