@@ -29,7 +29,7 @@ public class WorkWithConsole extends Observable implements ILogger {
         while (true)
         {
             s1 = sc.nextLine();
-            dialogBeforeLogOpen += s1;
+            dialogBeforeLogOpen += s1 + "\n";
             if (Objects.equals(s1, "0") || Objects.equals(s1, "1")){ return s1; }
             s1 = "Неправильный ввод - нужно ввести либо 0, либо 1\n";
             System.out.print(s1);
@@ -45,13 +45,15 @@ public class WorkWithConsole extends Observable implements ILogger {
 
         temp = "Введите путь к файлу журнала: ";
         System.out.print(temp);
-        dialogBeforeLogOpen = temp;
+        dialogBeforeLogOpen = temp + "\n";
         temp = sc.nextLine();
+        dialogBeforeLogOpen += temp;
 
         results.put("logFilePath", temp);
 
-        dialogBeforeLogOpen += "Вы хотите ввести исходный массив в консоли или считать данные из файла? 0 - консоль, 1 - файл\n";
-        System.out.print(dialogBeforeLogOpen);
+        temp = "Вы хотите ввести исходный массив в консоли или считать данные из файла? 0 - консоль, 1 - файл\n";
+        dialogBeforeLogOpen += temp;
+        System.out.print(temp);
         String aboutInput = InfiCycle();
 
 
@@ -65,9 +67,12 @@ public class WorkWithConsole extends Observable implements ILogger {
         {
             temp = "Введите путь к файлу: ";
             System.out.print(temp);
-            array = WorkWithFile.GetData(sc.nextLine());
+            dialogBeforeLogOpen += temp + "\n";
+            temp = sc.nextLine();
+            dialogBeforeLogOpen += temp;
+            array = WorkWithFile.GetData(temp);
         }
-        dialogBeforeLogOpen += temp;
+        dialogBeforeLogOpen += "Полученный массив: " + array;
 
         results.put("array", array);
 
