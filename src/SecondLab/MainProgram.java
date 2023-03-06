@@ -21,6 +21,7 @@ class Process extends Observable implements IFuncs, IConst
             for (String number : args) {
                 int num = Integer.parseInt(number);
                 checkNumber(num);
+                notifyObs("Обращаемся к переменной массива " + num);
 
                 if (num >= 0) {
                     if (num % 2 == 1) {
@@ -73,22 +74,45 @@ class Process extends Observable implements IFuncs, IConst
     }
 }
 
+class Result extends Observable
+{
+    private int _data;
+    public Result(Watcher w)
+    {
+        _data = 0;
+        this.addObserver(w);
+    }
+    public int GetResult()
+    {
+        return _data;
+    }
+
+    public void SetResult(int data)
+    {
+        setChanged();
+        notifyObservers(data);
+        _data = data;
+    }
+}
+
 public class MainProgram extends Observable
 {
    private final Process process;
-   private int result;
+   private Result result;
    public void SetResult(int data)
    {
        notifyObs("Изменяем указанную переменную");
-       result = data;
+       result.SetResult(data);
    }
-   public int GetResult() {return  result; };
+   public int GetResult() {return  result.GetResult(); };
 
-   public MainProgram(Watcher w)
+   public MainProgram(Watcher w, Watcher whoSeeForResult)
    {
        process = new Process();
        process.addObserver(w);
        this.addObserver(w);
+
+       result = new Result(whoSeeForResult);
    }
    public void process_sum(String[] args)
    {

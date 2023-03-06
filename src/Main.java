@@ -19,10 +19,14 @@ public class Main {
         file_printer.LogEvent(result.get("dialogBeforeLogOpen"));
 
         console.addObserver(watcherWhoWriteInFile);
-
         Watcher watcherWhoWrtieInConsole = new Watcher(console);
 
-        MainProgram sum = new MainProgram(watcherWhoWrtieInConsole);
+        ISeeHowUChangeThisValue w = new ISeeHowUChangeThisValue();
+        w.addObserver(watcherWhoWrtieInConsole);
+        Watcher watcherWhoWrtieInConsoleAndFile = new Watcher(w);
+
+
+        MainProgram sum = new MainProgram(watcherWhoWrtieInConsole, watcherWhoWrtieInConsoleAndFile);
 
         var arr = result.get("array").split(" ");
         sum.process_sum(arr);
